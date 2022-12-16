@@ -122,7 +122,23 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route POST /api/users/me
 // @access Private
 const getMe = asyncHandler(async (req, res) => {
-    const { _id, fname, lname, email, phonenumber, town, street, estate, country, password } = await User.findById(req.user.id)
+    const {
+        _id,
+        name: {
+            fname,
+            lname,
+        },
+        contacts: {
+            email,
+            phonenumber,
+        },
+        location: {
+            town,
+            street,
+            estate,
+            country,
+        },
+        password } = await User.findById(req.user.id)
 
     res.status(200).json({
         id: _id,
