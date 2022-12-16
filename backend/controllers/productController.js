@@ -1,8 +1,8 @@
 const asyncHandler = require('express-async-handler')
-
 const Product = require('../models/productsModel')
-// @desc Get goals
-// @route GET /api/goals
+
+// @desc Get products
+// @route GET /api/store
 // @ access Private
 // when we use mongoose to interact with the database we get a promise, so we use async await. we need to install an npm package called express-async-handler
 const getProducts = asyncHandler(async (req, res) => {
@@ -12,8 +12,8 @@ const getProducts = asyncHandler(async (req, res) => {
 })
 
 
-// @desc Set goals
-// @route SET /api/goals
+// @desc Set product
+// @route SET /api/store
 // @ access Private
 const setProducts = asyncHandler(async (req, res) => {
     if (!req.body.name) {
@@ -38,8 +38,8 @@ const setProducts = asyncHandler(async (req, res) => {
 })
 
 
-// @desc Update goals
-// @route PUT /api/goals/:id
+// @desc Update product
+// @route PUT /api/store/:id
 // @ access Private
 const updateProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id)
@@ -57,8 +57,8 @@ const updateProduct = asyncHandler(async (req, res) => {
 })
 
 
-// @desc Delete goals
-// @route DELETE /api/goals/:id
+// @desc Delete product
+// @route DELETE /api/store/:id
 // @ access Private
 const deleteProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id)
@@ -80,3 +80,4 @@ module.exports = {
     updateProduct,
     deleteProduct,
 }
+
