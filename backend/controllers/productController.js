@@ -1,12 +1,13 @@
 const asyncHandler = require('express-async-handler')
 const Product = require('../models/productsModel')
+const User = require('../models/userModels')
 
 // @desc Get products
 // @route GET /api/store
 // @ access Private
 // when we use mongoose to interact with the database we get a promise, so we use async await. we need to install an npm package called express-async-handler
 const getProducts = asyncHandler(async (req, res) => {
-    const products = await Product.find()
+    const products = await Product.find({ user: req.user.id })
 
     res.status(200).json(products)
 })
@@ -31,7 +32,8 @@ const setProducts = asyncHandler(async (req, res) => {
         size: req.body.size,
         color: req.body.color,
         prize: req.body.prize,
-        quantity: req.body.quantity
+        quantity: req.body.quantity,
+        user: req.user.id,
     })
 
     res.status(200).json(product)
@@ -47,6 +49,20 @@ const updateProduct = asyncHandler(async (req, res) => {
     if (!product) {
         res.status(400)
         throw new Error('Product not found')
+    }
+
+    const user = await User.findById(req.user.id)
+
+    //check for user
+    if (!user) {
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    //make sure the logged in user matches the product user
+    if (product.user.toString() !== user.id) {
+        res.status(401)
+        throw new Error('User not authorized')
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -66,6 +82,20 @@ const deleteProduct = asyncHandler(async (req, res) => {
     if (!product) {
         res.status(400)
         throw new Error('Product not found')
+    }
+
+    const user = await User.findById(req.user.id)
+
+    //check for user
+    if (!user) {
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    //make sure the logged in user matches the product user
+    if (product.user.toString() !== user.id) {
+        res.status(401)
+        throw new Error('User not authorized')
     }
 
     await product.remove()
